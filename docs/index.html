@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PQC Migration Framework Documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Post-Quantum Cryptographic Migration blueprints, roadmaps, and secure sockets SDK documentation.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <!-- Clean dark-mode styled theme -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/theme-simple-dark.css">
+  <style>
+    :root {
+      --theme-color: #3b82f6;
+    }
+    .markdown-section {
+      max-width: 850px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">Loading documentation portal...</div>
+  <script>
+    window.$docsify = {
+      name: 'PQC Migration SDK',
+      repo: 'ItsMeVikashKumarSingh/pqc-migration-framework',
+      loadSidebar: true,
+      subMaxLevel: 2,
+      homepage: 'README.md',
+      themeColor: '#3b82f6',
+      executeScript: true
+    }
+  </script>
+  <!-- Docsify SDK -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- Mermaid support for rendering charts dynamically -->
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+</body>
+</html>
