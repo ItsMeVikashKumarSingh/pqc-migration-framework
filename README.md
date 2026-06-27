@@ -91,7 +91,7 @@ python tests/test_pqc_sdk.py
 ## 📚 Migration Documentation Guides
 
 For in-depth guides on deploying this framework across enterprise environments:
-*   [Hybrid Cryptography Specifications](file:///c:/Users/vikas/OneDrive/Desktop/code/quantum/pqc-migration-framework/docs/hybrid_cryptography.md)
-*   [Mosca's Theorem Risk Assessment Model](file:///c:/Users/vikas/OneDrive/Desktop/code/quantum/pqc-migration-framework/docs/risk_assessment.md)
-*   [5-Phase Migration Roadmap & Timeline](file:///c:/Users/vikas/OneDrive/Desktop/code/quantum/pqc-migration-framework/docs/migration_roadmap.md)
-*   [Real-Time Gross Settlement Case Study](file:///c:/Users/vikas/OneDrive/Desktop/code/quantum/pqc-migration-framework/docs/case_study_rtgs.md)
+*   [Hybrid Cryptography Specifications](docs/hybrid_cryptography.md)
+*   [Mosca's Theorem Risk Assessment Model](docs/risk_assessment.md)
+*   [5-Phase Migration Roadmap & Timeline](docs/migration_roadmap.md)
+*   [Real-Time Gross Settlement Case Study](docs/case_study_rtgs.md)
