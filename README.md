@@ -1,4 +1,18 @@
+---
+title: PQC Migration SDK
+emoji: 🔌
+colorFrom: green
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Post-Quantum Cryptography Migration SDK
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Hugging%20Face%20Spaces-blue)](https://huggingface.co/spaces/itsmevikashkumarsingh/pqc-migration-control-panel)
+[![Web Portal](https://img.shields.io/badge/Web%20Portal-Direct%20Link-green)](https://itsmevikashkumarsingh-pqc-migration-control-panel.hf.space)
+[![Docs Site](https://img.shields.io/badge/Docs%20Site-GitHub%20Pages-orange)](https://itsmevikashkumarsingh.github.io/pqc-migration-framework/)
 
 A production-ready open-source software development kit (SDK) and migration framework implementing hybrid post-quantum cryptography (PQC) wrapping tools, dual signature verification, and secure network tunnels using Qiskit/NIST-standardized lattice schemes (ML-KEM, ML-DSA) and classical algorithms.
 
