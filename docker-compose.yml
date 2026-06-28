@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  pqc-migration-sdk:
+    build: .
+    container_name: pqc-migration-sdk
+    ports:
+      - "8003:7860"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1

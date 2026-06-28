@@ -1,2 +1,5 @@
 cryptography>=41.0.0
+fastapi
+uvicorn[standard]
+jinja2
 pytest>=7.0.0

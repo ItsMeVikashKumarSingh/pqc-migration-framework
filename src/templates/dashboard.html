@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PQC Migration Framework Control Panel</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #080c14;
+            --bg-secondary: #0f172a;
+            --border-color: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #64748b;
+            --color-high: #ef4444;
+            --color-medium: #f59e0b;
+            --color-low: #10b981;
+            --color-primary: #2563eb;
+            --color-primary-hover: #1d4ed8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+        }
+
+        header h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Tabbed Navigation */
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        /* Form elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input[type="number"] {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--color-primary);
+        }
+
+        .btn-action {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            align-self: flex-start;
+        }
+
+        .btn-action:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Split layouts */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Results / Output styling */
+        .results-box {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.immediate { background-color: rgba(239, 68, 68, 0.15); color: var(--color-high); }
+        .badge.high { background-color: rgba(245, 158, 11, 0.15); color: var(--color-medium); }
+        .badge.medium { background-color: rgba(234, 179, 8, 0.15); color: #eab308; }
+        .badge.low { background-color: rgba(16, 185, 129, 0.15); color: var(--color-low); }
+
+        /* Step visualizer */
+        .handshake-step {
+            border-left: 2px solid var(--border-color);
+            padding-left: 20px;
+            margin-left: 10px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .handshake-step::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            position: absolute;
+            left: -6px;
+            top: 5px;
+        }
+
+        .handshake-step.active::before {
+            background-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .hex-data {
+            font-family: monospace;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            word-break: break-all;
+        }
+
+        /* Benchmark bars */
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .bar-track {
+            height: 24px;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: var(--color-primary);
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+
+        .bar-fill.classical {
+            background-color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔬 PQC Migration Framework Control Panel</h1>
+        <div class="subtitle">Evaluate infrastructure vulnerabilities and simulate hybrid post-quantum handshakes</div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Tabbed Navigation Bar -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab(event, 'tab-mosca')">🛡️ Mosca Risk Calculator</button>
+            <button class="tab-btn" onclick="switchTab(event, 'tab-handshake')">🤝 Handshake Visualizer</button>
+            <button class="tab-btn" onclick="switchTab(event, 'tab-benchmark')">📊 Signature Benchmarks</button>
+        </div>
+
+        <!-- 1. MOSCA RISK CALCULATOR TAB -->
+        <div id="tab-mosca" class="tab-content active">
+            <div class="card">
+                <div class="card-title">Mosca's Theorem Vulnerability Calculator</div>
+                
+                <div class="split-layout">
+                    <!-- Inputs -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <p style="font-size: 0.875rem; color: var(--text-secondary);">
+                            Mosca's Theorem evaluates whether a system is vulnerable to <em>Harvest Now, Decrypt Later (HNDL)</em> attacks. If your data shelf-life (L) plus your migration timeline (M) exceeds the quantum collapse time (C), your data is already at risk.
+                        </p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="shelf_life">Data Shelf-Life (L in years)</label>
+                                <input type="number" id="shelf_life" value="10" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="migration_time">Migration Time (M in years)</label>
+                                <input type="number" id="migration_time" value="3" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="collapse_time">Quantum Collapse Time (C in years)</label>
+                                <input type="number" id="collapse_time" value="12" min="1">
+                            </div>
+                        </div>
+                        <button class="btn-action" onclick="runRiskCalculator()">Evaluate Risk Profile</button>
+                    </div>
+                    
+                    <!-- Outputs -->
+                    <div class="results-box" id="risk-results">
+                        <div class="result-row">
+                            <span>Combined Exposure Window (L + M):</span>
+                            <strong id="combined-time">13 Years</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Quantum Collapse Deadline (C):</span>
+                            <strong id="risk-collapse-time">12 Years</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Calculated Vulnerability Status:</span>
+                            <span class="badge immediate" id="risk-status">VULNERABLE</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Migration Priority Level:</span>
+                            <span class="badge immediate" id="risk-priority">High</span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="bar-label" style="margin-bottom: 6px;">
+                                <span>Quantum Threat Score</span>
+                                <span id="risk-score-text">54.2%</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" id="risk-score-bar" style="width: 54.2%; background-color: var(--color-high);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. HANDSHAKE VISUALIZER TAB -->
+        <div id="tab-handshake" class="tab-content">
+            <div class="card">
+                <div class="card-title">Hybrid Socket Handshake Simulator</div>
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 10px;">
+                    This simulator runs a real-time post-quantum hybrid handshake (X25519 ECDH + ML-KEM-768). Clicking below executes the key exchange and extracts the derived 256-bit symmetric session key.
+                </p>
+                <button class="btn-action" onclick="runHandshakeSimulation()" style="margin-bottom: 15px;">Simulate Hybrid Handshake</button>
+
+                <!-- Steps Visualizer -->
+                <div id="handshake-steps" style="display: none; flex-direction: column;">
+                    <div class="handshake-step active">
+                        <div class="step-title">Step 1: Client Hello Sent</div>
+                        <div class="step-desc">Client generates local KEM keypairs and sends X25519 Public Key (32 bytes) + ML-KEM-768 Public Key (1184 bytes).</div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--color-primary)">X25519 Public Key (Hex):</label>
+                                <div class="hex-data" id="client-x-pub">loading...</div>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--color-primary)">ML-KEM-768 Public Key (Hex Prefix):</label>
+                                <div class="hex-data" id="client-oqs-pub">loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="handshake-step active">
+                        <div class="step-title">Step 2: Server Hello & Encapsulation</div>
+                        <div class="step-desc">Server receives client public keys, runs local KEM key exchanges, encapsulates shared secrets, and returns its local X25519 Public Key (32 bytes) + ML-KEM Ciphertext (1088 bytes).</div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--color-primary)">Server X25519 Public Key (Hex):</label>
+                                <div class="hex-data" id="server-x-pub">loading...</div>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--color-primary)">Server ML-KEM Ciphertext (Hex Prefix):</label>
+                                <div class="hex-data" id="server-ciphertext">loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="handshake-step active" style="padding-bottom: 0;">
+                        <div class="step-title">Step 3: Key Derivation & Verification</div>
+                        <div class="step-desc">Both sides decrypt/decapsulate parameters and derive matching 256-bit symmetric session keys using HKDF.</div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--color-low)">Derived AES-256-GCM Session Key (Hex):</label>
+                            <div class="hex-data" id="derived-key" style="color: var(--text-primary); border-color: var(--color-low);">loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SIGNATURE BENCHMARKS TAB -->
+        <div id="tab-benchmark" class="tab-content">
+            <div class="card">
+                <div class="card-title">Cryptographic Overhead Benchmarks</div>
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 15px;">
+                    Lattice-based algorithms rely on higher-dimensional mathematical structures, leading to larger key sizes and signatures. This comparison charts the bandwidth size increase between legacy ECDSA and NIST-standardized ML-DSA-65.
+                </p>
+
+                <div class="split-layout">
+                    <!-- Key Size Comparison -->
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <h4 style="font-size: 0.95rem; font-weight: 600;">Public Key Sizes (Bytes)</h4>
+                        <div class="bar-container">
+                            <div class="bar-row">
+                                <div class="bar-label">
+                                    <span>ECDSA (secp256r1)</span>
+                                    <span>64 Bytes</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill classical" style="width: 3.2%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="bar-label">
+                                    <span>ML-DSA-65 (Dilithium)</span>
+                                    <span>1,952 Bytes</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary)">* ML-DSA-65 public keys are approximately 30x larger.</span>
+                    </div>
+
+                    <!-- Signature Size Comparison -->
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <h4 style="font-size: 0.95rem; font-weight: 600;">Digital Signature Sizes (Bytes)</h4>
+                        <div class="bar-container">
+                            <div class="bar-row">
+                                <div class="bar-label">
+                                    <span>ECDSA (secp256r1)</span>
+                                    <span>64 Bytes</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill classical" style="width: 1.9%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="bar-label">
+                                    <span>ML-DSA-65 (Dilithium)</span>
+                                    <span>3,300 Bytes</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary)">* ML-DSA-65 signatures are approximately 50x larger.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tab switching logic
+        function switchTab(evt, tabId) {
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].className = "tab-content";
+            }
+
+            const buttons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].className = "tab-btn";
+            }
+
+            document.getElementById(tabId).className = "tab-content active";
+            evt.currentTarget.className = "tab-btn active";
+        }
+
+        // Mosca's theorem calculator trigger
+        function runRiskCalculator() {
+            const L = document.getElementById("shelf_life").value;
+            const M = document.getElementById("migration_time").value;
+            const C = document.getElementById("collapse_time").value;
+
+            fetch(`/api/calculate-risk?L=${L}&M=${M}&C=${C}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("combined-time").innerText = `${data.combined_time} Years`;
+                    document.getElementById("risk-collapse-time").innerText = `${data.collapse_time} Years`;
+                    
+                    const statusEl = document.getElementById("risk-status");
+                    if (data.vulnerable) {
+                        statusEl.innerText = "VULNERABLE (HNDL Threat)";
+                        statusEl.className = "badge immediate";
+                    } else {
+                        statusEl.innerText = "SECURED (Safe Window)";
+                        statusEl.className = "badge low";
+                    }
+
+                    const priorityEl = document.getElementById("risk-priority");
+                    priorityEl.innerText = data.priority;
+                    priorityEl.className = `badge ${data.priority.toLowerCase()}`;
+
+                    document.getElementById("risk-score-text").innerText = `${data.risk_score}%`;
+                    const barFill = document.getElementById("risk-score-bar");
+                    barFill.style.width = `${data.risk_score}%`;
+                    
+                    if (data.risk_score > 60) {
+                        barFill.style.backgroundColor = "var(--color-high)";
+                    } else if (data.risk_score > 30) {
+                        barFill.style.backgroundColor = "var(--color-medium)";
+                    } else {
+                        barFill.style.backgroundColor = "var(--color-low)";
+                    }
+                });
+        }
+
+        // Handshake simulator trigger
+        function runHandshakeSimulation() {
+            document.getElementById("handshake-steps").style.display = "flex";
+            
+            fetch("/api/simulate-handshake", { method: "POST" })
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("client-x-pub").innerText = data.client_x_pub_hex;
+                    document.getElementById("client-oqs-pub").innerText = data.client_oqs_pub_hex;
+                    document.getElementById("server-x-pub").innerText = data.server_x_pub_hex;
+                    document.getElementById("server-ciphertext").innerText = data.server_oqs_ciphertext_hex;
+                    document.getElementById("derived-key").innerText = data.derived_key_hex;
+                });
+        }
+    </script>
+</body>
+</html>
